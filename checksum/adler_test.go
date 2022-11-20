@@ -1,4 +1,6 @@
-package checksum
+package checksum_test
+//Different package space because of some of the checksums depending on the checksum
+// namespace, and that leads to a circular import reference on the test files (if same namespace)
 
 import (
 	"hash/adler32"
@@ -13,9 +15,9 @@ type stringAdler struct {
 var stringAdlers []stringAdler
 
 func init() {
-	stringAdlers = []stringAdler{
+	stringAdlers=[]stringAdler {
 		//Wiki
-		{"Wikipedia", 0x11E60398},
+		{"Wikipedia",0x11E60398},
 		//Others
 		{"abcde", 0x05C801F0},
 		{"abcdef", 0x081E0256},
@@ -48,10 +50,10 @@ func init() {
 }
 
 func TestAdler(t *testing.T) {
-	for i := 0; i < len(stringAdlers); i++ {
+	for i:=0;i<len(stringAdlers);i++ {
 		found := adler32.Checksum([]byte(stringAdlers[i].s))
 		if found != stringAdlers[i].h {
-			t.Fatalf("Hashing %v, expecting %v, got %v", stringAdlers[i].s, stringAdlers[i].h, found)
+			t.Fatalf("Hashing %v, expecting %v, got %v",stringAdlers[i].s,stringAdlers[i].h,found)	
 		}
 	}
 }
