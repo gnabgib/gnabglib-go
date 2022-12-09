@@ -70,8 +70,8 @@ const sizeSpace = blockSizeBytes - 2*u32Size //64bit uint representing size
 type ripeCtx struct {
 	hash     func(*ripeCtx)       //Hashing func for when block is full
 	state    [10]uint32           //Runtime state of hash
-	stateLen int                  //Port of the state used
-	len      uint64               //Number of bytes added to state (so far)
+	stateLen int                  //Part of the state used (variants based)
+	len      uint64               //Number of bytes added to state (in total
 	block    [blockSizeBytes]byte //Temp processing block
 	bPos     int                  //Position of data written to block
 }

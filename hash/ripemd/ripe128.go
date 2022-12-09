@@ -8,8 +8,10 @@ import (
 	"math/bits"
 )
 
-const roundCount128 = 4
-const hashSize128u32 = 4
+const (
+	roundCount128 = 4
+	hashSize128u32 = 4
+)
 
 func hash128(ctx *ripeCtx) {
 	a := ctx.state[0]
@@ -46,6 +48,5 @@ func New128() hash.Hash {
 		hash:     hash128,
 		stateLen: hashSize128u32}
 	c.Reset()
-	c.BlockSize()
 	return c
 }

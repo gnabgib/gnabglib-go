@@ -96,6 +96,5 @@ func New320() hash.Hash {
 		hash:     hash320,
 		stateLen: hashSize320u32}
 	c.Reset()
-	c.BlockSize()
 	return c
 }

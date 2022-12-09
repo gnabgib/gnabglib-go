@@ -78,6 +78,5 @@ func New256() hash.Hash {
 		hash:     hash256,
 		stateLen: hashSize256u32}
 	c.Reset()
-	c.BlockSize()
 	return c
 }
