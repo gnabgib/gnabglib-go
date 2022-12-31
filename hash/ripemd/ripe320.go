@@ -29,50 +29,50 @@ func hash320(ctx *ripeCtx) {
 	var t uint32
 
 	for ; j < 16; j++ {
-		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], s[j])
+		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
 		a, e, d, c, b = e, d, bits.RotateLeft32(c, 10), b, t
 		t = ee +
-			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], ss[j])
+			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], int(ss[j]))
 		aa, ee, dd, cc, bb = ee, dd, bits.RotateLeft32(cc, 10), bb, t
 	}
 	b, bb = bb, b
 
 	round = 1
 	for ; j < 32; j++ {
-		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], s[j])
+		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
 		a, e, d, c, b = e, d, bits.RotateLeft32(c, 10), b, t
 		t = ee +
-			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], ss[j])
+			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], int(ss[j]))
 		aa, ee, dd, cc, bb = ee, dd, bits.RotateLeft32(cc, 10), bb, t
 	}
 	d, dd = dd, d
 
 	round = 2
 	for ; j < 48; j++ {
-		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], s[j])
+		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
 		a, e, d, c, b = e, d, bits.RotateLeft32(c, 10), b, t
 		t = ee +
-			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], ss[j])
+			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], int(ss[j]))
 		aa, ee, dd, cc, bb = ee, dd, bits.RotateLeft32(cc, 10), bb, t
 	}
 	a, aa = aa, a
 
 	round = 3
 	for ; j < 64; j++ {
-		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], s[j])
+		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
 		a, e, d, c, b = e, d, bits.RotateLeft32(c, 10), b, t
 		t = ee +
-			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], ss[j])
+			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], int(ss[j]))
 		aa, ee, dd, cc, bb = ee, dd, bits.RotateLeft32(cc, 10), bb, t
 	}
 	c, cc = cc, c
 
 	round = 4
 	for ; j < 80; j++ {
-		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], s[j])
+		t = e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
 		a, e, d, c, b = e, d, bits.RotateLeft32(c, 10), b, t
 		t = ee +
-			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], ss[j])
+			bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], int(ss[j]))
 		aa, ee, dd, cc, bb = ee, dd, bits.RotateLeft32(cc, 10), bb, t
 	}
 	e, ee = ee, e

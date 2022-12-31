@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	roundCount128 = 4
+	roundCount128  = 4
 	hashSize128u32 = 4
 )
 
@@ -28,9 +28,9 @@ func hash128(ctx *ripeCtx) {
 	for round := 0; round < roundCount128; round++ {
 		n := (round + 1) * 16
 		for j := round * 16; j < n; j++ {
-			t := bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], s[j])
+			t := bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
 			a, d, c, b = d, c, b, t
-			t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+kk128[round], ss[j])
+			t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+kk128[round], int(ss[j]))
 			aa, dd, cc, bb = dd, cc, bb, t
 		}
 	}
