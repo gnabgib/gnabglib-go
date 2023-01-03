@@ -29,19 +29,13 @@ var bytesStrSep4 = []bytesHexPair{
 func TestGenString(t *testing.T) {
 	for _, rec := range bytesStrPairs {
 		found := BytesToString(rec.bytes)
-		test.StringCompare(t,found,rec.hex)
+		test.StringMatch(t, found, rec.hex)
 	}
 }
 
 func TestGenStringSep4(t *testing.T) {
 	for _, rec := range bytesStrSep4 {
 		found := BytesToStringSep(rec.bytes, 4)
-		test.StringCompare(t,found,rec.hex)
+		test.StringMatch(t, found, rec.hex)
 	}
-	//Make sure ctrl chars look ok
-	test.StringCompare(t,"Hi\tthere","Hi\tyou")
-	test.StringCompare(t,"Hi\vthere","Hi\vyou")
-	test.StringCompare(t,"Hi\x00 there","Hi\x00 you")
-	test.StringCompare(t,"Hi\nthere","Hi\nyou")
-	test.StringCompare(t,"Hi\x7fthere","Hi\x7fyou")
 }

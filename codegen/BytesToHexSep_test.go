@@ -10,9 +10,9 @@ var bytesHexSep4 = []bytesHexPair{
 	{[]byte{0xf0, 0xf1, 0xf2, 0xf3,
 		0xf4, 0xf5, 0xf6, 0xf7},
 		"{0xF0, 0xF1, 0xF2, 0xF3, \n0xF4, 0xF5, 0xF6, 0xF7}"},
-	{[]byte{0, 1, 2, 3, 
-		4, 5, 6, 7, 
-		8, 9, 10, 11, 
+	{[]byte{0, 1, 2, 3,
+		4, 5, 6, 7,
+		8, 9, 10, 11,
 		12, 13, 14, 15},
 		"{0x00, 0x01, 0x02, 0x03, \n0x04, 0x05, 0x06, 0x07, \n0x08, 0x09, 0x0A, 0x0B, \n0x0C, 0x0D, 0x0E, 0x0F}"},
 }
@@ -20,6 +20,6 @@ var bytesHexSep4 = []bytesHexPair{
 func TestGenHexSep4(t *testing.T) {
 	for _, rec := range bytesHexSep4 {
 		found := BytesToHexSep(rec.bytes, 4)
-		test.StringCompare(t,found,rec.hex)
+		test.StringMatch(t, rec.hex, found)
 	}
 }
