@@ -12,6 +12,10 @@ import (
 // the values side by side with style markers to show character mismatch.
 // Note this does no UTF8 folding etc, the strings are to be byte-identical
 func StringMatch(t *testing.T, expect, found string) {
+	StringMatchTitle(t, "", expect, found)
+}
+
+func StringMatchTitle(t *testing.T, title, expect, found string) {
 	//Simple case.. the byte strings are identical (yay)
 	if found == expect {
 		return
@@ -36,8 +40,12 @@ func StringMatch(t *testing.T, expect, found string) {
 
 	first := findFirstMismatch(eRunes, fRunes, marker)
 	last := findLastMismatch(eRunes, fRunes, marker, first)
-
-	t.Errorf("Expect, found:\n%s␃\n%s␃\n%s",
+	fullTitle:=""
+	if len(title)>0 {
+		fullTitle=title+": "
+	}
+	t.Errorf("%sExpect, found:\n%s␃\n%s␃\n%s",
+		fullTitle,
 		renderText(expect, nBytes-len(expect), first, last),
 		renderText(found, nBytes-len(found), first, last),
 		marker)
@@ -69,7 +77,7 @@ func findFirstMismatch(eRunes, fRunes []string, marker []byte) int {
 
 // The last differing rune between two arrays, returned as negative offset from the end
 func findLastMismatch(eRunes, fRunes []string, marker []byte, first int) int {
-	markerDelta:=len(marker)-len(eRunes)-1
+	markerDelta := len(marker) - len(eRunes) - 1
 	e := len(eRunes) - 1
 	for f := len(fRunes) - 1; e > first && f > first; {
 		//Marker is 1 longer than eRunes
@@ -81,7 +89,7 @@ func findLastMismatch(eRunes, fRunes []string, marker []byte, first int) int {
 		f--
 	}
 	//Fill in spaces between markers
-	for i := e - 1+markerDelta; i > first; i-- {
+	for i := e - 1 + markerDelta; i > first; i-- {
 		marker[i] = ' '
 	}
 	//Mark the mismatch
@@ -112,8 +120,8 @@ func renderText(t string, blankChars, markStart, markEndOffset int) string {
 	copy(ret[markStart+4:], t[markStart:markEnd])
 	//Add any blanks
 	for i := 0; i < blankChars*2; i += 2 {
-		ret[markEnd+4+i]='\xc2'
-		ret[markEnd+4+i+1]='\xb7'
+		ret[markEnd+4+i] = '\xc2'
+		ret[markEnd+4+i+1] = '\xb7'
 	}
 	//Add end change marker
 	copy(ret[markEnd+4+blankChars*2:], "\x1b[0m")
