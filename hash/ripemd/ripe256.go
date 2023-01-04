@@ -4,6 +4,7 @@
 package ripemd
 
 import (
+	"encoding/binary"
 	"hash"
 	"math/bits"
 )
@@ -24,39 +25,47 @@ func hash256(ctx *ripeCtx) {
 
 	j := 0
 	round := 0
+	tk := binary.BigEndian.Uint32([]byte(k[round*4 : round*4+4]))
+	tkk := binary.BigEndian.Uint32([]byte(kk128[round*4 : round*4+4]))
 	var t uint32
 
 	for ; j < 16; j++ {
-		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
+		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+tk, int(s[j]))
 		a, d, c, b = d, c, b, t
-		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+kk128[round], int(ss[j]))
+		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+tkk, int(ss[j]))
 		aa, dd, cc, bb = dd, cc, bb, t
 	}
 	a, aa = aa, a
 
 	round = 1
+	tk = binary.BigEndian.Uint32([]byte(k[round*4 : round*4+4]))
+	tkk = binary.BigEndian.Uint32([]byte(kk128[round*4 : round*4+4]))
 	for ; j < 32; j++ {
-		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
+		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+tk, int(s[j]))
 		a, d, c, b = d, c, b, t
-		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+kk128[round], int(ss[j]))
+		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+tkk, int(ss[j]))
 		aa, dd, cc, bb = dd, cc, bb, t
 	}
 	b, bb = bb, b
 
 	round = 2
+	tk = binary.BigEndian.Uint32([]byte(k[round*4 : round*4+4]))
+	tkk = binary.BigEndian.Uint32([]byte(kk128[round*4 : round*4+4]))
 	for ; j < 48; j++ {
-		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
+		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+tk, int(s[j]))
 		a, d, c, b = d, c, b, t
-		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+kk128[round], int(ss[j]))
+		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+tkk, int(ss[j]))
 		aa, dd, cc, bb = dd, cc, bb, t
 	}
 	c, cc = cc, c
 
 	round = 3
+	tk = binary.BigEndian.Uint32([]byte(k[round*4 : round*4+4]))
+	tkk = binary.BigEndian.Uint32([]byte(kk128[round*4 : round*4+4]))
 	for ; j < 64; j++ {
-		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
+		t = bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+tk, int(s[j]))
 		a, d, c, b = d, c, b, t
-		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+kk128[round], int(ss[j]))
+		t = bits.RotateLeft32(aa+f[3-round](bb, cc, dd)+x[rr[j]]+tkk, int(ss[j]))
 		aa, dd, cc, bb = dd, cc, bb, t
 	}
 	d, dd = dd, d

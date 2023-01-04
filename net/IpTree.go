@@ -4,7 +4,6 @@
 package net
 
 import (
-	//"encoding/binary"
 	"net"
 )
 
@@ -35,7 +34,7 @@ type none struct{}
 func (n none) getValue() interface{} {
 	return nil
 }
-func (n none) each(position uint32, mask byte, output func(position uint32,mask byte, value interface{})) {
+func (n none) each(position uint32, mask byte, output func(position uint32, mask byte, value interface{})) {
 	//nop
 }
 
@@ -153,5 +152,3 @@ func (t *Tree) ListCidr() []CidrValue {
 	})
 	return ret
 }
-
-

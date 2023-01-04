@@ -4,6 +4,7 @@
 package ripemd
 
 import (
+	"encoding/binary"
 	"hash"
 	"math/bits"
 )
@@ -29,11 +30,13 @@ func hash160(ctx *ripeCtx) {
 
 	for round := 0; round < roundCount160; round++ {
 		n := (round + 1) * 16
+		tk := binary.BigEndian.Uint32([]byte(k[round*4 : round*4+4]))
+		tkk := binary.BigEndian.Uint32([]byte(kk[round*4 : round*4+4]))
 		for j := round * 16; j < n; j++ {
-			t := e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+k[round], int(s[j]))
+			t := e + bits.RotateLeft32(a+f[round](b, c, d)+x[r[j]]+tk, int(s[j]))
 			a, e, d, c, b = e, d, bits.RotateLeft32(c, 10), b, t
 			t = ee +
-				bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+kk[round], int(ss[j]))
+				bits.RotateLeft32(aa+f[4-round](bb, cc, dd)+x[rr[j]]+tkk, int(ss[j]))
 			aa, ee, dd, cc, bb = ee, dd, bits.RotateLeft32(cc, 10), bb, t
 		}
 	}

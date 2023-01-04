@@ -19,12 +19,11 @@ var Network binary.ByteOrder
 
 func init() {
 	//We always write source code in big-endian
-	SourceCode=binary.BigEndian
+	SourceCode = binary.BigEndian
 	//Network order is also always big-endian
-	Network=binary.BigEndian
+	Network = binary.BigEndian
 
-	//While the majority of platforms are little-endian, let's detect
-	// with a pointer cast
+	//While the majority of platforms are little-endian, let's detect with a pointer cast
 	b := [2]byte{}
 	*(*uint16)(unsafe.Pointer(&b[0])) = uint16(0xABCD)
 	switch b[0] {

@@ -10,8 +10,7 @@ import (
 
 // Convert a uint into an IPMask (from CIDR notation to go-internal)
 func MaskFromByte(b byte) net.IPMask {
-	var mask uint32
-	mask = 0xffffffff << (32 - b)
+	mask := uint32(0xffffffff << (32 - b))
 	ret := make([]byte, 4)
 	binary.BigEndian.PutUint32(ret, mask)
 	return ret

@@ -4,6 +4,7 @@
 package ripemd
 
 import (
+	"encoding/binary"
 	"unsafe"
 )
 
@@ -64,6 +65,33 @@ const (
 		"\x0F\x05\x08\x0B\x0E\x0E\x06\x0E\x06\x09\x0C\x09\x0C\x05\x0F\x08" +
 		//s' 64..79
 		"\x08\x05\x0C\x09\x0C\x05\x0E\x06\x08\x0D\x06\x05\x0F\x0D\x0B\x0B"
+	//0,int(2**30 x sqrt(2)), int(2**30 x sqrt(3)),int(2**30 x sqrt(5)),int(2**30 x sqrt(7))
+	k = "\x00\x00\x00\x00" +
+		"\x5a\x82\x79\x99" +
+		"\x6e\xd9\xeb\xa1" +
+		"\x8f\x1b\xbc\xdc" +
+		"\xa9\x53\xfd\x4e"
+	// int(2**30 x cbrt(2)),int(2**30 x cbrt(3)),int(2**30 x cbrt(5)),int(2**30 x cbrt(7)),0
+	kk = "\x50\xa2\x8b\xe6" +
+		"\x5c\x4d\xd1\x24" +
+		"\x6d\x70\x3e\xf3" +
+		"\x7a\x6d\x76\xe9" +
+		"\x00\x00\x00\x00"
+	// In 128/256 the last constant of the parallel set is zeroed, but otherwise notice these are the same as @see kk
+	kk128 = "\x50\xa2\x8b\xe6" +
+		"\x5c\x4d\xd1\x24" +
+		"\x6d\x70\x3e\xf3" +
+		"\x00\x00\x00\x00"
+	iv = "\x67\x45\x23\x01" +
+		"\xef\xcd\xab\x89" +
+		"\x98\xba\xdc\xfe" +
+		"\x10\x32\x54\x76" +
+		"\xc3\xd2\xe1\xf0"
+	iv2 = "\x76\x54\x32\x10" +
+		"\xfe\xdc\xba\x98" +
+		"\x89\xab\xcd\xef" +
+		"\x01\x23\x45\x67" +
+		"\x3c\x2d\x1e\x0f"
 	u32Size        = int(unsafe.Sizeof(uint32(0)))
 	blockSizeBytes = 64 //512 bits
 	blockSizeU32   = blockSizeBytes / u32Size
@@ -72,14 +100,6 @@ const (
 
 var (
 	f = [...]func(x, y, z uint32) uint32{f0, f1, f2, f3, f4}
-	//0,int(2**30 x sqrt(2)), int(2**30 x sqrt(3)),int(2**30 x sqrt(5)),int(2**30 x sqrt(7))
-	k = [...]uint32{0x00000000, 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xa953fd4e}
-	// int(2**30 x cbrt(2)),int(2**30 x cbrt(3)),int(2**30 x cbrt(5)),int(2**30 x cbrt(7)),0
-	kk = [...]uint32{0x50a28be6, 0x5c4dd124, 0x6d703ef3, 0x7a6d76e9, 0x00000000}
-	// In 128/256 the last constant of the parallel set is zeroed, but otherwise notice these are the same as @see kk
-	kk128 = [...]uint32{0x50a28be6, 0x5c4dd124, 0x6d703ef3, 0x00000000}
-	iv    = [...]uint32{0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0}
-	iv2   = [...]uint32{0x76543210, 0xfedcba98, 0x89abcdef, 0x01234567, 0x3c2d1e0f}
 )
 
 // Shared Context/Algo__ __ __ __ __ __ __ __ __ __ __ __ __ __ __
@@ -109,12 +129,12 @@ func (c *ripeCtx) Reset() {
 		//Deal with 256,320 loading iv2 into second half of space
 		n /= 2
 		for i := 0; i < n; i++ {
-			c.state[i] = iv[i]
-			c.state[i+n] = iv2[i]
+			c.state[i] = binary.BigEndian.Uint32([]byte(iv[i*4 : i*4+4]))
+			c.state[i+n] = binary.BigEndian.Uint32([]byte(iv2[i*4 : i*4+4]))
 		}
 	} else {
 		for i := 0; i < n; i++ {
-			c.state[i] = iv[i]
+			c.state[i] = binary.BigEndian.Uint32([]byte(iv[i*4 : i*4+4]))
 		}
 	}
 	c.len = 0

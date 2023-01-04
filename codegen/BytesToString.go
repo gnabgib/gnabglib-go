@@ -7,7 +7,7 @@ import (
 	"github.com/gnabgib/gnablib-go/encoding/hex"
 )
 
-//Generate a (likely invalid UTF8) string holding bytes, which can be used as a constant in golang
+// Generate a (likely invalid UTF8) string holding bytes, which can be used as a constant in golang
 func BytesToString(in []byte) string {
 	h := []byte(hex.FromBytes(in))
 	n := len(h)
@@ -29,7 +29,7 @@ func BytesToString(in []byte) string {
 	return string(ret)
 }
 
-//Generate a (likely invalid UTF8) string holding bytes, which can be used as a constant
+// Generate a (likely invalid UTF8) string holding bytes, which can be used as a constant
 // in golang.  bytesPerSection should be >1 and indicate how many bytes to include before
 // adding a break.  There are 4 characters per byte ("\x" plus two hex).
 func BytesToStringSep(in []byte, bytesPerSection int) string {
@@ -53,7 +53,7 @@ func BytesToStringSep(in []byte, bytesPerSection int) string {
 	ptr := 1
 	for i, b := range h {
 		if i&1 == 0 {
-			if i%hexPerSection == 0 && ptr>1 {
+			if i%hexPerSection == 0 && ptr > 1 {
 				ret[ptr] = '"'
 				ret[ptr+1] = '+'
 				ret[ptr+2] = '"'
