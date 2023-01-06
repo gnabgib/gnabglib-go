@@ -5,7 +5,8 @@ package ripemd
 
 import (
 	"encoding/binary"
-	"unsafe"
+
+	"github.com/gnabgib/gnablib-go/bytes"
 )
 
 //https://en.wikipedia.org/wiki/RIPEMD
@@ -92,7 +93,7 @@ const (
 		"\x89\xab\xcd\xef" +
 		"\x01\x23\x45\x67" +
 		"\x3c\x2d\x1e\x0f"
-	u32Size        = int(unsafe.Sizeof(uint32(0)))
+	u32Size        = 4  //int(unsafe.Sizeof(uint32(0)))
 	blockSizeBytes = 64 //512 bits
 	blockSizeU32   = blockSizeBytes / u32Size
 	sizeSpace      = blockSizeBytes - 2*u32Size //64bit uint representing size
@@ -116,9 +117,7 @@ type ripeCtx struct {
 func (c *ripeCtx) getX() []uint32 {
 	ret := make([]uint32, blockSizeU32)
 	for i := 0; i < blockSizeU32; i++ {
-		j := i * 4
-		//Little Endian conversion
-		ret[i] = uint32(c.block[j]) | uint32(c.block[j+1])<<8 | uint32(c.block[j+2])<<16 | uint32(c.block[j+3])<<24
+		ret[i] = binary.LittleEndian.Uint32(c.block[i*u32Size:])
 	}
 	return ret
 }
@@ -129,12 +128,12 @@ func (c *ripeCtx) Reset() {
 		//Deal with 256,320 loading iv2 into second half of space
 		n /= 2
 		for i := 0; i < n; i++ {
-			c.state[i] = binary.BigEndian.Uint32([]byte(iv[i*4 : i*4+4]))
-			c.state[i+n] = binary.BigEndian.Uint32([]byte(iv2[i*4 : i*4+4]))
+			c.state[i] = binary.BigEndian.Uint32([]byte(iv[i*u32Size:]))
+			c.state[i+n] = binary.BigEndian.Uint32([]byte(iv2[i*u32Size:]))
 		}
 	} else {
 		for i := 0; i < n; i++ {
-			c.state[i] = binary.BigEndian.Uint32([]byte(iv[i*4 : i*4+4]))
+			c.state[i] = binary.BigEndian.Uint32([]byte(iv[i*u32Size:]))
 		}
 	}
 	c.len = 0
@@ -150,24 +149,19 @@ func (c *ripeCtx) Write(p []byte) (n int, err error) {
 	for nToWrite > 0 {
 		if space > nToWrite {
 			//If there's more space than data, copy the data in
-			for i := 0; i < nToWrite; i++ {
-				c.block[c.bPos+i] = p[i]
-			}
+			copy(c.block[c.bPos:], p)
 			c.bPos += nToWrite
 			//And we're done
 			return
 		}
 		//Otherwise write to the end of the space
-		for i := 0; i < space; i++ {
-			c.block[c.bPos+i] = p[i]
-		}
+		copy(c.block[c.bPos:], p[0:space])
 		c.bPos += space
-		//Process the block
-		c.hash(c)
-		//And repeat
-		p = p[space:]
+
+		c.hash(c)     //Process the block
+		p = p[space:] //Re-slice for the next section
 		nToWrite -= space
-		space = blockSizeBytes
+		space = blockSizeBytes //Max space from now on
 	}
 	return
 }
@@ -181,20 +175,15 @@ func (c *ripeCtx) Sum(in []byte) []byte {
 	// byte free (if there was zero, it would be hashed and there'd be 64)
 	h.block[h.bPos] = 0x80
 	h.bPos++
-	//If we don't have enough space for the size, add zeros
+	//If we don't have enough space for the size, add zeros and hash
 	if h.bPos > sizeSpace {
-		for h.bPos < blockSizeBytes {
-			h.block[h.bPos] = 0
-			h.bPos += 1
-		}
+		bytes.Zero(h.block[h.bPos:])
 		h.hash(h)
 	}
 
-	//Now add zeros until there's space for the size
-	for h.bPos < sizeSpace {
-		h.block[h.bPos] = 0
-		h.bPos += 1
-	}
+	//Zero leaving space for the size
+	bytes.Zero(h.block[h.bPos:sizeSpace])
+	h.bPos = sizeSpace
 
 	//Write the size.. in bits (it's stored in bytes *8 = <<3)
 	h.block[h.bPos] = byte(h.len << 3)
@@ -209,17 +198,13 @@ func (c *ripeCtx) Sum(in []byte) []byte {
 
 	h.hash(h)
 	//Append the state (which is the hash) to the input
-	var out = make([]byte, h.stateLen*4)
+	var out = make([]byte, h.stateLen*u32Size)
 	for i := 0; i < h.stateLen; i++ {
-		j := i * 4
-		out[j] = byte(h.state[i])
-		out[j+1] = byte(h.state[i] >> 8)
-		out[j+2] = byte(h.state[i] >> 16)
-		out[j+3] = byte(h.state[i] >> 24)
+		binary.LittleEndian.PutUint32(out[i*u32Size:],h.state[i])
 	}
 	return append(in, out...) //Shake it all about
 }
 
 func (c *ripeCtx) BlockSize() int { return blockSizeBytes }
 
-func (c *ripeCtx) Size() int { return c.stateLen * 4 }
+func (c *ripeCtx) Size() int { return c.stateLen * u32Size }

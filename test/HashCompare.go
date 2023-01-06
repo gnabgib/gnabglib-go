@@ -12,7 +12,7 @@ func HashTest(t *testing.T, h hash.Hash, in []byte, expectHex string) {
 	found := h.Sum([]byte{})
 	foundHex := hex.FromBytes(found)
 
-	StringMatchTitle(t, "Hash("+Abbr(string(in))+")", expectHex, foundHex)
+	StringMatchTitle(t, "Hash("+Abbr(string(in))+")", "", expectHex, foundHex)
 }
 
 func HashHexTest(t *testing.T, h hash.Hash, inHex string, expectHex string) {
@@ -21,5 +21,5 @@ func HashHexTest(t *testing.T, h hash.Hash, inHex string, expectHex string) {
 	found := h.Sum([]byte{})
 	foundHex := hex.FromBytes(found)
 
-	StringMatchTitle(t, "HashHex("+Abbr(inHex)+")", expectHex, foundHex)
+	StringMatchTitle(t, "HashHex("+Abbr(inHex)+")", "", expectHex, foundHex)
 }

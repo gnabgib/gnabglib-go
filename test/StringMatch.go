@@ -12,10 +12,10 @@ import (
 // the values side by side with style markers to show character mismatch.
 // Note this does no UTF8 folding etc, the strings are to be byte-identical
 func StringMatch(t *testing.T, expect, found string) {
-	StringMatchTitle(t, "", expect, found)
+	StringMatchTitle(t, "", "", expect, found)
 }
 
-func StringMatchTitle(t *testing.T, title, expect, found string) {
+func StringMatchTitle(t *testing.T, title, prefix, expect, found string) {
 	//Simple case.. the byte strings are identical (yay)
 	if found == expect {
 		return
@@ -44,29 +44,32 @@ func StringMatchTitle(t *testing.T, title, expect, found string) {
 	if len(title)>0 {
 		fullTitle=title+": "
 	}
-	t.Errorf("%sExpect, found:\n%s␃\n%s␃\n%s",
+	t.Errorf("%sExpect, found:\n%s%s␃\n%s%s␃\n%s%s",
 		fullTitle,
+		prefix,
 		renderText(expect, nBytes-len(expect), first, last),
+		prefix,
 		renderText(found, nBytes-len(found), first, last),
+		prefix,
 		marker)
 }
 
 // The first differing rune between the two arrays
-func findFirstMismatch(eRunes, fRunes []string, marker []byte) int {
+func findFirstMismatch(e, f []string, marker []byte) int {
 	//Note the runes come in as strings, but we know they're just runes
 	// due to the rule of Split on empty delimiter
 	i := 0
-	for ; i < len(eRunes); i++ {
-		if i >= len(fRunes) || eRunes[i] != fRunes[i] {
+	for ; i < len(e); i++ {
+		if i >= len(f) || e[i] != f[i] {
 			break
 		}
 		switch {
-		case eRunes[i] == "\x7f":
+		case e[i] == "\x7f":
 			//Duplicate del in marker
 			marker[i] = '\x7f'
-		case int(eRunes[i][0]) < 32:
+		case int(e[i][0]) < 32:
 			//If the char is control (other than above), copy it to output
-			marker[i] = byte(eRunes[i][0])
+			marker[i] = byte(e[i][0])
 		default:
 			marker[i] = '-'
 		}
