@@ -48,7 +48,7 @@ func TestAdler(t *testing.T) {
 	for _, rec := range adlerTests {
 		found := adler32.Checksum([]byte(rec.s))
 		if found != rec.c {
-			t.Fatalf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
+			t.Errorf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
 		}
 	}
 }

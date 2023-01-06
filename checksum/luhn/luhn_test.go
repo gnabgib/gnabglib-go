@@ -39,7 +39,7 @@ func TestLuhn(t *testing.T) {
 	for _, rec := range luhnTests {
 		found := Checksum(rec.n)
 		if found != rec.c {
-			t.Fatalf("Hashing %v, expecting %v, got %v", rec.n, rec.c, found)
+			t.Errorf("Hashing %v, expecting %v, got %v", rec.n, rec.c, found)
 		}
 	}
 }

@@ -32,8 +32,8 @@ func TestIpv4FromUint(t *testing.T) {
 		//Note ParseIp may return a 16byte array (ipv6)
 		expect := net.ParseIP(rec.ip).To4()
 		found := Ipv4FromUint(rec.num)
-		if !Ipv4Equal(expect, found) {
-			t.Fatalf("Expecting %v, got %v", expect, found)
+		if !net.IP.Equal(expect,found) {
+			t.Errorf("Expecting %v, got %v", expect, found)
 		}
 	}
 }
@@ -45,22 +45,9 @@ func TestIpv4ToUint(t *testing.T) {
 		found := Ipv4ToUint(ip)
 
 		if expect != found {
-			t.Fatalf("Expecting %v, got %v", expect, found)
+			t.Errorf("Expecting %v, got %v", expect, found)
 		}
 	}
-}
-
-var ipEqTests = []struct {
-	a, b   string
-	expect bool
-}{
-	{"192.168.1.0", "192.168.1.0", true},
-	{"192.168.1.0", "192.168.0.1", false},
-	{"192.168.0.1", "192.168.1.0", false},
-	{"1.2.3.4", "4.3.2.1", false},
-	{"2001:db8::68", "192.168.0.1", false},
-	{"192.168.0.1", "2001:db8::68", false},
-	{"2001:db8::68", "2001:db8::68", false}, //Note because neither are v4 this is still false
 }
 
 
@@ -71,17 +58,6 @@ func TestIpv4ToUint_withv6(t *testing.T) {
 	ip := net.ParseIP("2001:db8::68")
 	found := Ipv4ToUint(ip)
 	if found != 0 {
-		t.Fatalf("Expecting 0, got %v", found)
-	}
-}
-
-func TestIpv4Equal(t *testing.T) {
-	for _, rec := range ipEqTests {
-		a := net.ParseIP(rec.a)
-		b := net.ParseIP(rec.b)
-
-		if Ipv4Equal(a, b) != rec.expect {
-			t.Fatalf("Expected %v==%v to be %v", a, b, rec.expect)
-		}
+		t.Errorf("Expecting 0, got %v", found)
 	}
 }

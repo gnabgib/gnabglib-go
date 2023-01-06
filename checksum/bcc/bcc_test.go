@@ -46,7 +46,7 @@ func TestBcc(t *testing.T) {
 		d.Write([]byte(rec.s))
 		found := d.Sum8()
 		if found != rec.b {
-			t.Fatalf("Hashing %v, expecting %v, got %v", rec.s, rec.b, found)
+			t.Errorf("Hashing %v, expecting %v, got %v", rec.s, rec.b, found)
 		}
 	}
 }

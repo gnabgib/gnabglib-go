@@ -45,11 +45,11 @@ func TestFletcher16(t *testing.T) {
 		d.Write([]byte(rec.s))
 		found := d.Sum16()
 		if found != rec.c {
-			t.Fatalf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
+			t.Errorf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
 		}
 		found2 := endian.SourceCode.Uint16(d.Sum([]byte{}))
 		if found2 != rec.c {
-			t.Fatalf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found2)
+			t.Errorf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found2)
 		}
 	}
 }

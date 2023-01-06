@@ -49,10 +49,10 @@ func TestToByte(t *testing.T) {
 	for _, rec := range maskTests {
 		mask := net.IPMask(rec.mask)
 		found := MaskToByte(mask)
-		expected := rec.b
+		expect := rec.b
 
-		if found != expected {
-			t.Fatalf("Expecting byte form of mask %v to be %v, got %v", mask, expected, found)
+		if found != expect {
+			t.Errorf("Expecting byte form of mask %v to be %v, got %v", mask, expect, found)
 		}
 	}
 }
@@ -60,11 +60,11 @@ func TestToByte(t *testing.T) {
 func TestFromByte(t *testing.T) {
 	for _, rec := range maskTests {
 
-		expected := net.IPMask(rec.mask)
+		expect := net.IPMask(rec.mask)
 		found := MaskFromByte(rec.b)
 
-		if !bytes.Equal(found, expected) {
-			t.Fatalf("Expecting mask from byte %v to be %v, got %v", rec.b, expected, found)
+		if !bytes.Equal(found, expect) {
+			t.Errorf("Expecting mask from byte %v to be %v, got %v", rec.b, expect, found)
 		}
 	}
 }

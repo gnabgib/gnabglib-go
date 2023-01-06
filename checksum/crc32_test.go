@@ -27,7 +27,7 @@ func TestCrc32(t *testing.T) {
 	for _, rec := range crc32tests {
 		found := crc32.ChecksumIEEE([]byte(rec.s))
 		if found != rec.c {
-			t.Fatalf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
+			t.Errorf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
 		}
 	}
 }

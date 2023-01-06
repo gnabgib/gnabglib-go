@@ -42,7 +42,7 @@ func TestLrc(t *testing.T) {
 		d.Write([]byte(rec.s))
 		found := d.Sum8()
 		if found != rec.c {
-			t.Fatalf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
+			t.Errorf("Hashing %v, expecting %v, got %v", rec.s, rec.c, found)
 		}
 	}
 }

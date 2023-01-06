@@ -18,7 +18,7 @@ func TestNotEqual(t *testing.T) {
 		_, c1, _ := net.ParseCIDR(rec.a)
 		_, c2, _ := net.ParseCIDR(rec.b)
 		if CidrEqual(c1, c2) {
-			t.Fatalf("Expecting CIDRs to be unequal %v==%v", c1, c2)
+			t.Errorf("Expecting CIDRs to be unequal %v==%v", c1, c2)
 		}
 	}
 }
@@ -34,11 +34,11 @@ var cidrFirstLastIpTests = []struct {
 func TestFirstIpv4(t *testing.T) {
 	for _, rec := range cidrFirstLastIpTests {
 		_, c, _ := net.ParseCIDR(rec.cidr)
-		expected := net.ParseIP(rec.first)
+		expect := net.ParseIP(rec.first)
 		found := FirstIpv4(c)
 
-		if !Ipv4Equal(expected, found) {
-			t.Fatalf("Expecting first ip of %v to be %v, found %v", rec.cidr, expected, found)
+		if !net.IP.Equal(expect,found) {
+			t.Errorf("Expecting first ip of %v to be %v, found %v", rec.cidr, expect, found)
 		}
 	}
 }
@@ -46,18 +46,18 @@ func TestFirstIpv4(t *testing.T) {
 func TestLastIpv4(t *testing.T) {
 	for _, rec := range cidrFirstLastIpTests {
 		_, c, _ := net.ParseCIDR(rec.cidr)
-		expected := net.ParseIP(rec.last)
+		expect := net.ParseIP(rec.last)
 		found := LastIpv4(c)
 
-		if !Ipv4Equal(expected, found) {
-			t.Fatalf("Expecting last ip of %v to be %v, found %v", c, expected, found)
+		if !net.IP.Equal(expect,found) {
+			t.Errorf("Expecting last ip of %v to be %v, found %v", c, expect, found)
 		}
 	}
 }
 
 var cidrContainsTests = []struct {
 	cidr, ip string
-	expected bool
+	expect bool
 }{
 	{"192.168.0.0/24", "192.168.0.0", true},
 	{"192.168.0.0/24", "192.168.0.255", true},
@@ -75,8 +75,8 @@ func TestCidrContains(t *testing.T) {
 		ip := net.ParseIP(rec.ip)
 		found := c.Contains(ip)
 
-		if rec.expected != found {
-			t.Fatalf("Expecting %v contains %v to be %v", c, ip, rec.expected)
+		if rec.expect != found {
+			t.Errorf("Expecting %v contains %v to be %v", c, ip, rec.expect)
 		}
 	}
 }
@@ -86,6 +86,6 @@ func TestEqual(t *testing.T) {
 	_, c2, _ := net.ParseCIDR("192.168.1.0/24")
 
 	if !CidrEqual(c1, c2) {
-		t.Fatalf("Expecting CIDRs to be found equal")
+		t.Errorf("Expecting CIDRs to be found equal")
 	}
 }
